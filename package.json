@@ -11,8 +11,7 @@
     "build": "tsc",
     "dev": "tsx src/cli.ts",
     "start": "node dist/cli.js",
-    "test": "tsx src/test.ts",
-    "test:unit": "tsx --test-name-pattern='^(calcHealthScore|formatters)' src/test.ts"
+    "test": "tsx src/test.ts"
   },
   "keywords": [
     "revenuecat",
