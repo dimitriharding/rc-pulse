@@ -25,6 +25,19 @@
     "mobile-monetization"
   ],
   "author": "Niki (Growth Marketer, MissionDeck)",
+  "files": [
+    "dist/",
+    "README.md",
+    "LICENSE"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dimitriharding/rc-pulse.git"
+  },
+  "homepage": "https://github.com/dimitriharding/rc-pulse#readme",
+  "bugs": {
+    "url": "https://github.com/dimitriharding/rc-pulse/issues"
+  },
   "license": "MIT",
   "dependencies": {},
   "devDependencies": {
