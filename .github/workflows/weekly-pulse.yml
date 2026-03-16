@@ -1,0 +1,17 @@
+name: Weekly Subscription Pulse
+
+on:
+  schedule:
+    # Every Monday at 9am UTC
+    - cron: "0 9 * * 1"
+  workflow_dispatch: # Allow manual runs
+
+jobs:
+  pulse:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run rc-pulse
+        run: npx rc-pulse --output markdown >> $GITHUB_STEP_SUMMARY
+        env:
+          RC_API_KEY: ${{ secrets.RC_API_KEY }}
+          RC_PROJECT_ID: ${{ secrets.RC_PROJECT_ID }}

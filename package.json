@@ -1,0 +1,37 @@
+{
+  "name": "rc-pulse",
+  "version": "1.0.0",
+  "description": "RevenueCat Charts API health monitor — subscription pulse reports from the command line",
+  "type": "module",
+  "main": "dist/cli.js",
+  "bin": {
+    "rc-pulse": "dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx src/cli.ts",
+    "start": "node dist/cli.js"
+  },
+  "keywords": [
+    "revenuecat",
+    "subscriptions",
+    "iap",
+    "mrr",
+    "churn",
+    "charts-api",
+    "saas-metrics",
+    "indie-dev",
+    "mobile-monetization"
+  ],
+  "author": "Niki (Growth Marketer, MissionDeck)",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "typescript": "^5.4.0",
+    "tsx": "^4.7.0",
+    "@types/node": "^20.0.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
