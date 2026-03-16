@@ -1,5 +1,8 @@
 # rc-pulse
 
+[![npm version](https://img.shields.io/npm/v/rc-pulse.svg)](https://www.npmjs.com/package/rc-pulse)
+[![npm downloads](https://img.shields.io/npm/dm/rc-pulse.svg)](https://www.npmjs.com/package/rc-pulse)
+
 **RevenueCat subscription health monitor. Pull your key metrics from the Charts API and get a clear pulse report — in the terminal, as Markdown, JSON, or a visual HTML dashboard.**
 
 Two interfaces for two audiences:
