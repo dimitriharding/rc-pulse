@@ -1,6 +1,6 @@
 {
   "name": "rc-pulse",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "RevenueCat Charts API health monitor — subscription pulse reports from the command line",
   "type": "module",
   "main": "dist/cli.js",

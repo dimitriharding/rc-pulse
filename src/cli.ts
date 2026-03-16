@@ -1,9 +1,12 @@
 #!/usr/bin/env node
+import { createServer } from "node:http";
+import { readFileSync } from "node:fs";
 import { RCChartsClient } from "./client.js";
 import { fetchPulseMetrics } from "./metrics.js";
 import { formatTerminal, formatMarkdown, formatJson } from "./report.js";
+import { generateDashboardHtml } from "./dashboard.js";
 
-const VERSION = "1.0.0";
+const VERSION = "1.1.0";
 
 function usage(): void {
   console.log(`
@@ -11,11 +14,17 @@ rc-pulse v${VERSION} — RevenueCat subscription health monitor
 
 Usage:
   rc-pulse [options]
+  rc-pulse serve [options]
+
+Commands:
+  (default)   Output a health report to stdout
+  serve       Start a local dashboard server and open in browser
 
 Options:
   --api-key <key>         RevenueCat secret API key (or RC_API_KEY env var)
   --project-id <id>       RevenueCat project ID (or RC_PROJECT_ID env var)
-  --output <format>       Output format: terminal (default), markdown, json
+  --output <format>       Output format: terminal (default), markdown, json, html
+  --port <port>           Port for serve command (default: 3847)
   --list-projects         List all projects for the given API key and exit
   --version               Print version
   --help                  Show this help
@@ -23,7 +32,9 @@ Options:
 Examples:
   rc-pulse --api-key sk_xxx --project-id proj_xxx
   rc-pulse --api-key sk_xxx --project-id proj_xxx --output markdown
-  rc-pulse --api-key sk_xxx --project-id proj_xxx --output json > report.json
+  rc-pulse --api-key sk_xxx --project-id proj_xxx --output html > report.html
+  rc-pulse --api-key sk_xxx --project-id proj_xxx --output json > data.json
+  rc-pulse serve --api-key sk_xxx --project-id proj_xxx
 
 Environment variables:
   RC_API_KEY       RevenueCat secret API key
@@ -49,9 +60,11 @@ async function run(): Promise<void> {
     return idx !== -1 ? args[idx + 1] : undefined;
   }
 
+  const isServe = args[0] === "serve";
   const apiKey = getArg("--api-key") ?? process.env.RC_API_KEY;
   const projectId = getArg("--project-id") ?? process.env.RC_PROJECT_ID;
-  const output = (getArg("--output") ?? "terminal") as "terminal" | "markdown" | "json";
+  const output = (getArg("--output") ?? "terminal") as "terminal" | "markdown" | "json" | "html";
+  const port = parseInt(getArg("--port") ?? "3847", 10);
 
   if (!apiKey) {
     console.error("Error: --api-key or RC_API_KEY required");
@@ -94,6 +107,26 @@ async function run(): Promise<void> {
 
   const metrics = await fetchPulseMetrics(client);
 
+  // Serve mode: start local server and open browser
+  if (isServe) {
+    const html = generateDashboardHtml(metrics, projectName);
+    const server = createServer((_req, res) => {
+      res.writeHead(200, { "Content-Type": "text/html; charset=utf-8" });
+      res.end(html);
+    });
+    server.listen(port, () => {
+      const url = `http://localhost:${port}`;
+      process.stderr.write(`\nrc-pulse dashboard running at ${url}\n`);
+      process.stderr.write("Press Ctrl+C to stop.\n\n");
+      // Open in browser (best-effort)
+      const open =
+        process.platform === "darwin" ? "open" :
+        process.platform === "win32" ? "start" : "xdg-open";
+      import("node:child_process").then(({ exec }) => exec(`${open} ${url}`)).catch(() => {});
+    });
+    return; // keep server alive
+  }
+
   switch (output) {
     case "terminal":
       console.log(formatTerminal(metrics, projectName));
@@ -103,6 +136,9 @@ async function run(): Promise<void> {
       break;
     case "json":
       console.log(formatJson(metrics, projectName));
+      break;
+    case "html":
+      console.log(generateDashboardHtml(metrics, projectName));
       break;
     default:
       console.error(`Unknown output format: ${output}`);

@@ -1,6 +1,10 @@
 # rc-pulse
 
-**RevenueCat subscription health monitor. Pull your key metrics from the Charts API and get a clear pulse report — in the terminal, as Markdown, or as JSON.**
+**RevenueCat subscription health monitor. Pull your key metrics from the Charts API and get a clear pulse report — in the terminal, as Markdown, JSON, or a visual HTML dashboard.**
+
+Two interfaces for two audiences:
+- **CLI** — for agents, scripts, GitHub Actions, and developers who want composable JSON output
+- **Dashboard** — a visual HTML report for humans, with MRR trend charts, a health score gauge, and signal cards
 
 ```
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -73,13 +77,30 @@ rc-pulse
 rc-pulse --api-key sk_xxx --project-id proj_xxx
 ```
 
+### Dashboard — Visual HTML report
+```bash
+# Open an interactive dashboard in your browser (auto-launches)
+rc-pulse serve --api-key sk_xxx --project-id proj_xxx
+
+# Or generate a standalone HTML file to share or deploy
+rc-pulse --api-key sk_xxx --project-id proj_xxx --output html > report.html
+open report.html
+```
+
+The dashboard includes:
+- Animated health score gauge (0–100)
+- MRR trend chart (12-month history)
+- Churn rate vs. historical average (bar chart)
+- Overview metric cards with trend badges
+- Color-coded signals section
+
 ### Markdown (for Notion, GitHub, Slack bots)
 ```bash
 rc-pulse --api-key sk_xxx --project-id proj_xxx --output markdown
 rc-pulse --output markdown > weekly-report.md
 ```
 
-### JSON (for custom integrations)
+### JSON (for agents, scripts, custom integrations)
 ```bash
 rc-pulse --output json | jq '.metrics.mrr'
 rc-pulse --output json > report.json
